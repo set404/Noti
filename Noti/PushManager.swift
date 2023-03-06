@@ -146,6 +146,10 @@ class PushManager: NSObject, WebSocketDelegate, NSUserNotificationCenterDelegate
                 if(alternateAction == Int.max) {
                     //user did not use an alternate action, set the index to 0
                     alternateAction = 0
+                
+                    let pasteboard = NSPasteboard.general
+                    pasteboard.clearContents()
+                    pasteboard.setString(notification.actionButtonTitle, forType: .string)
                 }
                 
                 print("action")
@@ -377,13 +381,32 @@ class PushManager: NSObject, WebSocketDelegate, NSUserNotificationCenterDelegate
                         break;
                     case "sms_changed":
                         log.debug("PUSH -> sms_changed")
+                        
                         if push["notifications"].exists() {
                             for sms in push["notifications"].array! {
                                 let notification = NSUserNotification()
                                 
-                                notification.title = "SMS from " + sms["title"].string!
+                                notification.title = "SMS  from " + sms["title"].string!
                                 notification.informativeText = sms["body"].string
                                 notification.hasReplyButton = true
+                                
+                                do {
+                                    let input = sms["body"].string!
+                                    let regex = try NSRegularExpression(pattern: "[0-9]{4,6}|$", options: NSRegularExpression.Options.caseInsensitive)
+                                    let matches = regex.matches(in: input, options: [], range: NSRange(location: 0, length: input.utf16.count))
+
+                                    if let match = matches.first {
+                                        let range = match.range(at:0)
+                                        if let swiftRange = Range(range, in: input) {
+                                            notification.hasReplyButton = false
+                                            notification.hasActionButton = true
+                                            notification.actionButtonTitle = String(input[swiftRange])
+                                        }
+                                    }
+                                } catch {
+                                    // ignore
+                                }
+                                
                                 notification.identifier = "sms_" + push["source_device_iden"].string! + "|" + sms["thread_id"].string! + "|" + String(sms["timestamp"].int!)
                                 
                                 notification.setValue(true, forKeyPath: "_showsButtons")
@@ -441,11 +464,12 @@ class PushManager: NSObject, WebSocketDelegate, NSUserNotificationCenterDelegate
                 notification.informativeText = push["body"].string
                 notification.identifier = "noti_note" + push["iden"].string!
                 notification.actionButtonTitle = "Dismiss"
+                
             default :                                                       // Default: all other Noty
                 notification.title = push["title"].string
                 notification.informativeText = push["body"].string
-                notification.otherButtonTitle = "Dismiss    "
                 notification.identifier = push["notification_id"].string
+
             }
         }
         let omitAppNameDefaultExists = userDefaults.object(forKey: "omitAppName") != nil
