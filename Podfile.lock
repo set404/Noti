@@ -14,12 +14,12 @@ DEPENDENCIES:
   - EMCLoginItem (~> 1.0.1)
   - Sparkle (~> 1.14.0)
   - Starscream (~> 3.0.2)
-  - SwCrypt (= 4.0.0)
+  - SwCrypt
   - SwiftyBeaver
   - SwiftyJSON (~> 3.1.1)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - Alamofire
     - CryptoSwift
     - EMCLoginItem
@@ -40,6 +40,6 @@ SPEC CHECKSUMS:
   SwiftyBeaver: 384235c59d9c67b4a5e1810cffa713babba34efd
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
 
-PODFILE CHECKSUM: 7481dc9ca87f0ae2c2cf3cd704c80fb346debf7e
+PODFILE CHECKSUM: 89e4430c0dfda7d518a1ec6c0f7fc3ca654e5aab
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.12.0
