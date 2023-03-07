@@ -392,7 +392,7 @@ class PushManager: NSObject, WebSocketDelegate, NSUserNotificationCenterDelegate
                                 
                                 do {
                                     let input = sms["body"].string!
-                                    let regex = try NSRegularExpression(pattern: "[0-9]{4,6}|$", options: NSRegularExpression.Options.caseInsensitive)
+                                    let regex = try NSRegularExpression(pattern: "[^.][0-9]{4,6}", options: NSRegularExpression.Options.caseInsensitive)
                                     let matches = regex.matches(in: input, options: [], range: NSRange(location: 0, length: input.utf16.count))
 
                                     if let match = matches.first {
@@ -401,7 +401,7 @@ class PushManager: NSObject, WebSocketDelegate, NSUserNotificationCenterDelegate
                                             if (String(input[swiftRange]).count > 3) {
                                                 notification.hasReplyButton = false
                                                 notification.hasActionButton = true
-                                                notification.actionButtonTitle = String(input[swiftRange])
+                                                notification.actionButtonTitle = String(input[swiftRange]).filter("0123456789".contains)
                                             }
                                         }
                                     }
