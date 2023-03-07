@@ -386,7 +386,7 @@ class PushManager: NSObject, WebSocketDelegate, NSUserNotificationCenterDelegate
                             for sms in push["notifications"].array! {
                                 let notification = NSUserNotification()
                                 
-                                notification.title = "SMS  from " + sms["title"].string!
+                                notification.title = "SMS from " + sms["title"].string!
                                 notification.informativeText = sms["body"].string
                                 notification.hasReplyButton = true
                                 
@@ -398,9 +398,11 @@ class PushManager: NSObject, WebSocketDelegate, NSUserNotificationCenterDelegate
                                     if let match = matches.first {
                                         let range = match.range(at:0)
                                         if let swiftRange = Range(range, in: input) {
-                                            notification.hasReplyButton = false
-                                            notification.hasActionButton = true
-                                            notification.actionButtonTitle = String(input[swiftRange])
+                                            if (String(input[swiftRange]).count > 3) {
+                                                notification.hasReplyButton = false
+                                                notification.hasActionButton = true
+                                                notification.actionButtonTitle = String(input[swiftRange])
+                                            }
                                         }
                                     }
                                 } catch {
@@ -468,6 +470,7 @@ class PushManager: NSObject, WebSocketDelegate, NSUserNotificationCenterDelegate
             default :                                                       // Default: all other Noty
                 notification.title = push["title"].string
                 notification.informativeText = push["body"].string
+                notification.otherButtonTitle = "Dismiss    "
                 notification.identifier = push["notification_id"].string
 
             }
