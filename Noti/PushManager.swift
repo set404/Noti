@@ -392,7 +392,7 @@ class PushManager: NSObject, WebSocketDelegate, NSUserNotificationCenterDelegate
                                 
                                 do {
                                     let input = sms["body"].string!
-                                    let regex = try NSRegularExpression(pattern: "[^.][0-9]{4,6}", options: NSRegularExpression.Options.caseInsensitive)
+                                    let regex = try NSRegularExpression(pattern: "[^.]\\b[0-9]{4,6}\\b(?![-\\.][0-9])", options: NSRegularExpression.Options.caseInsensitive)
                                     let matches = regex.matches(in: input, options: [], range: NSRange(location: 0, length: input.utf16.count))
 
                                     if let match = matches.first {
